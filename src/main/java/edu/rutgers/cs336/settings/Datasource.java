@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 @Configuration
-public class Database {
+public class Datasource {
     @Autowired
     private Environment env;
 
