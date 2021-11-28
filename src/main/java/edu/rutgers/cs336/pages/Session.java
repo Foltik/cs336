@@ -1,7 +1,5 @@
 package edu.rutgers.cs336.pages;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;

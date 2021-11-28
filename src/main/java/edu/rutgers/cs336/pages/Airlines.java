@@ -1,9 +1,8 @@
 package edu.rutgers.cs336.pages;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,25 +20,25 @@ public class Airlines {
     private AirlineSvc airlines;
 
     @GetMapping
-    public String index(Map<String, Object> model) {
-        model.put("airlines", airlines.index());
+    public String index(Model model) {
+        model.addAttribute("airlines", airlines.index());
         return "airlines";
     }
 
     @PostMapping
-    public String create(@ModelAttribute Airline airline, Map<String, Object> model) {
+    public String create(@ModelAttribute Airline airline, Model model) {
         airlines.create(airline);
         return index(model);
     }
 
     @PutMapping
-    public String update(@ModelAttribute Airline airline, Map<String, Object> model) {
+    public String update(@ModelAttribute Airline airline, Model model) {
         airlines.update(airline);
         return index(model);
     }
 
     @DeleteMapping
-    public String delete(@ModelAttribute Airline airline, Map<String, Object> model) {
+    public String delete(@ModelAttribute Airline airline, Model model) {
         airlines.delete(airline.id());
         return index(model);
     }
