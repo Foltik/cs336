@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS booking (
     id INT NOT NULL AUTO_INCREMENT,
     customer_id INT NOT NULL,
     fare DECIMAL NOT NULL,
-    created_on DATETIME NOT NULL,
-    purchased_on DATETIME,
-    type ENUM('first-class', 'business', 'economy') NOT NULL,
+    created_on TIMESTAMP NOT NULL,
+    purchased_on TIMESTAMP,
+    type ENUM('first_class', 'business', 'economy') NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES user (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
 );
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS flight (
     takeoff_time DATETIME NOT NULL,
     landing_time DATETIME NOT NULL,
     type ENUM('domestic', 'international') NOT NULL,
-    direction ENUM('one-way', 'round-trip') NOT NULL,
+    direction ENUM('one_way', 'round_trip') NOT NULL,
     FOREIGN KEY (aircraft_id) REFERENCES aircraft (id) ON DELETE CASCADE,
     FOREIGN KEY (to_airport_id) REFERENCES airport (id) ON DELETE CASCADE,
     FOREIGN KEY (from_airport_id) REFERENCES airport (id) ON DELETE CASCADE,
@@ -82,4 +82,31 @@ CREATE TABLE IF NOT EXISTS flight_day (
     day ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
     FOREIGN KEY (flight_id) REFERENCES flight (id),
     PRIMARY KEY (flight_id, day)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS question (
+    id INT NOT NULL AUTO_INCREMENT,
+    customer_id INT NOT NULL,
+    title VARCHAR(255),
+    body TEXT,
+    FOREIGN KEY (customer_id) REFERENCES user (id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS answer (
+    id INT NOT NULL AUTO_INCREMENT,
+    representative_id INT NOT NULL,
+    body TEXT,
+    FOREIGN KEY (representative_id) REFERENCES user (id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS question_answer (
+    question_id INT NOT NULL,
+    answer_id INT NOT NULL,
+    FOREIGN KEY (question_id) REFERENCES question (id) ON DELETE CASCADE,
+    FOREIGN KEY (answer_id) REFERENCES answer (id) ON DELETE CASCADE,
+    PRIMARY KEY (question_id, answer_id)
 );

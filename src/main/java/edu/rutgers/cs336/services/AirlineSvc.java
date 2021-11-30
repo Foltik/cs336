@@ -3,6 +3,7 @@ package edu.rutgers.cs336.services;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ public class AirlineSvc {
 
     public List<Airline> index() {
         return db.index("SELECT * FROM airline", Airline::mapper);
+    }
+
+    public Optional<Airline> findById(int id) {
+        return db.find("SELECT * FROM airline WHERE id = ?", Airline::mapper, id);
     }
 
     public void create(Airline a) {
