@@ -70,4 +70,9 @@ public class UserSvc {
     // public void delete(int id) {
     //     db.update("DELETE FROM user WHERE id = ?", id);
     // }
+
+    public List<User> getCustomersReps()
+    {
+        return db.index("SELECT * FROM user WHERE NOT user.role='admin'",User::mapper);
+    }
 }

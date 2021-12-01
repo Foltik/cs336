@@ -1,6 +1,6 @@
 package edu.rutgers.cs336.pages;
 import javax.servlet.http.HttpSession;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +23,9 @@ public class Admin {
     @GetMapping
     public String index(HttpSession session, Model model) {
         model.addAttribute("user", session.getAttribute("user"));
+
+        List<User> list = users.getCustomersReps();
+        model.addAttribute("list", list);
         return "admin";
     }
 }
