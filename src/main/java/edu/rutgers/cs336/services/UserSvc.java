@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserSvc {
-    enum Role {admin, representative, customer}
+    public enum Role {admin, representative, customer}
     public static record User(Integer id, String username, String password, String first_name, String last_name, Role role) implements Serializable {
         private static User mapper(ResultSet rs, int i) throws SQLException {
             return new User(
@@ -67,12 +67,28 @@ public class UserSvc {
     //     db.update("UPDATE user SET first_name = ?, last_name = ? WHERE id = ?", a.first_name, a.last_name, a.id);
     // }
 
-    // public void delete(int id) {
-    //     db.update("DELETE FROM user WHERE id = ?", id);
-    // }
+    public void delete(int id) {
+         db.update("DELETE FROM user WHERE id = ?", id);
+    }
 
     public List<User> getCustomersReps()
     {
         return db.index("SELECT * FROM user WHERE NOT user.role='admin'",User::mapper);
+    }
+    public Optional<User> registerRep(User user) {
+        var existing = findByUsername(user.username());
+
+        if (existing.isEmpty()) {
+            db.insert("INSERT INTO user (username, password, first_name, last_name, role) VALUES (?, ?, ?, ?, ?)",
+                user.username(),
+                user.password(),
+                user.first_name(),
+                user.last_name(),
+                Role.representative.toString());
+
+            return findByUsername(user.username());
+        } else {
+            return Optional.empty();
+        }
     }
 }

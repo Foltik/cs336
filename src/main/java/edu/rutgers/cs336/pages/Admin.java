@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.rutgers.cs336.services.UserSvc;
+import edu.rutgers.cs336.services.UserSvc.Role;
 import edu.rutgers.cs336.services.UserSvc.User;
 
 @Controller
@@ -27,5 +28,30 @@ public class Admin {
         List<User> list = users.getCustomersReps();
         model.addAttribute("list", list);
         return "admin";
+    }
+
+    @PutMapping
+    public String register(@ModelAttribute User form, HttpSession session, Model model) {
+        if(form.role() == Role.representative)
+        {
+            users.registerRep(form).ifPresentOrElse(user -> {
+                model.addAttribute("message", "Successfully registered user!");
+    
+            }, () -> {
+                // User already exists
+                model.addAttribute("message", "User already exists");
+            });
+        }
+        else
+        {
+            users.register(form).ifPresentOrElse(user -> {
+                model.addAttribute("message", "Successfully registered user!");
+    
+            }, () -> {
+                // User already exists
+                model.addAttribute("message", "User already exists");
+            });
+        }
+        return index(session, model);
     }
 }
