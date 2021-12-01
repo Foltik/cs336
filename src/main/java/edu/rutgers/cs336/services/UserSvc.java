@@ -63,9 +63,9 @@ public class UserSvc {
         }
     }
 
-    // public void update(User a) {
-    //     db.update("UPDATE user SET first_name = ?, last_name = ? WHERE id = ?", a.first_name, a.last_name, a.id);
-    // }
+    public void update(User a) {
+         db.update("UPDATE user SET first_name = ?, last_name = ? WHERE id = ?", a.first_name, a.last_name, a.id);
+    }
 
     public void delete(int id) {
          db.update("DELETE FROM user WHERE id = ?", id);

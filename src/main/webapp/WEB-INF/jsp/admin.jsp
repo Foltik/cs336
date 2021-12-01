@@ -49,7 +49,18 @@
                             Role: <input type="text" name="role"/>
                             <input type="hidden" name="_method" value="PUT"/>
                             <input type="submit" value="Add"/>
-
+                        </form>
+                        <h3>Edit a user</h3>
+                        <p>To edit a user, enter a valid ID and and fill all input boxes.</p>
+                        <form action="/admin" method="POST">
+                            ID: <input type="text" name="id"/>
+                            Username: <input type="text" name="username"/>
+                            Password: <input type="text" name="password"/>
+                            First Name: <input type="text" name="first_name"/>
+                            Last Name: <input type="text" name="last_name"/>
+                            Role: <input type="text" name="role"/>
+                            <input type="hidden" name="_method" value="PUT"/>
+                            <input type="submit" value="Update"/>
                         </form>
                         <p>Debug: ${message}</p>
                     </c:when>

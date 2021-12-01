@@ -1,6 +1,7 @@
 package edu.rutgers.cs336.pages;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +31,7 @@ public class Admin {
         return "admin";
     }
 
-    @PutMapping
+    @PutMapping(params = "Add")
     public String register(@ModelAttribute User form, HttpSession session, Model model) {
         if(form.role() == Role.representative)
         {
@@ -53,5 +54,39 @@ public class Admin {
             });
         }
         return index(session, model);
+    }
+
+    @PutMapping(params = "Update")
+    public String Update(@ModelAttribute User form, HttpSession session, Model model)
+    {
+        Optional<User> orig = users.findById(form.id());
+        if(orig.isPresent())
+        {
+            int id = form.id();
+            String username = form.username();
+            String password = form.password();
+            String first_name = form.first_name();
+            String last_name = form.last_name();
+            Role role = form.role();
+
+            if(username == "")
+                username = orig.get().username();
+            if(password == "")
+                password = orig.get().password();
+            if(first_name == "")
+                first_name = orig.get().first_name();
+            if(last_name == "")
+                last_name = orig.get().last_name();
+            if(role != Role.admin && role != Role.representative
+             && role != Role.customer)
+                role = orig.get().role();
+
+            User usr = new User(id, username, password, first_name, last_name, role);
+            users.update(usr);
+            model.addAttribute("message", "Updated user");
+        }
+        else
+            model.addAttribute("message", "ID not found.");
+        return "";
     }
 }
