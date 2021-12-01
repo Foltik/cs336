@@ -17,18 +17,39 @@ import edu.rutgers.cs336.services.UserSvc.Role;
 import edu.rutgers.cs336.services.UserSvc.User;
 
 @Controller
-@RequestMapping("/admin")
-public class Admin {
+@RequestMapping("/adminadd")
+public class AdminAdd {
     @Autowired
     private UserSvc users;
 
     @GetMapping
     public String index(HttpSession session, Model model) {
         model.addAttribute("user", session.getAttribute("user"));
-
-        List<User> list = users.getCustomersReps();
-        model.addAttribute("list", list);
-        return "admin";
+        return "adminadd";
     }
 
+    @PutMapping
+    public String register(@ModelAttribute User form, HttpSession session, Model model) {
+        if(form.role() == Role.representative)
+        {
+            users.registerRep(form).ifPresentOrElse(user -> {
+                model.addAttribute("message", "Successfully registered user!");
+    
+            }, () -> {
+                // User already exists
+                model.addAttribute("message", "User already exists");
+            });
+        }
+        else
+        {
+            users.register(form).ifPresentOrElse(user -> {
+                model.addAttribute("message", "Successfully registered user!");
+    
+            }, () -> {
+                // User already exists
+                model.addAttribute("message", "User already exists");
+            });
+        }
+        return index(session, model);
+    }
 }

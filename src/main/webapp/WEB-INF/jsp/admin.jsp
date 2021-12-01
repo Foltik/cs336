@@ -40,29 +40,12 @@
                                 </tr>
                             </c:forEach>
                         </table>
-                        <h3>Add a user</h3>
-                        <form action="/admin" method="POST">
-                            Username: <input type="text" name="username"/>
-                            Password: <input type="text" name="password"/>
-                            First Name: <input type="text" name="first_name"/>
-                            Last Name: <input type="text" name="last_name"/>
-                            Role: <input type="text" name="role"/>
-                            <input type="hidden" name="_method" value="PUT"/>
-                            <input type="submit" value="Add"/>
-                        </form>
-                        <h3>Edit a user</h3>
-                        <p>To edit a user, enter a valid ID and and fill all input boxes.</p>
-                        <form action="/admin" method="POST">
-                            ID: <input type="text" name="id"/>
-                            Username: <input type="text" name="username"/>
-                            Password: <input type="text" name="password"/>
-                            First Name: <input type="text" name="first_name"/>
-                            Last Name: <input type="text" name="last_name"/>
-                            Role: <input type="text" name="role"/>
-                            <input type="hidden" name="_method" value="PUT"/>
-                            <input type="submit" value="Update"/>
-                        </form>
-                        <p>Debug: ${message}</p>
+                        <h3>Admin options</h3>
+                        <ul>
+                            <li><a href="/adminadd">Add a user</a></li>
+                            <li><a href="/adminedit">Edit a user</a></li>
+                            <li><a href="/admindelete">Delete a user</a></li>
+                        </ul>
                     </c:when>
                     <c:otherwise>
                         <h1>Unauthorized Access</h1>

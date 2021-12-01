@@ -64,7 +64,11 @@ public class UserSvc {
     }
 
     public void update(User a) {
-         db.update("UPDATE user SET first_name = ?, last_name = ? WHERE id = ?", a.first_name, a.last_name, a.id);
+        if(a.role == Role.customer)
+            db.update("UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, role = ? WHERE id = ?",a.username, a.password, a.first_name, a.last_name, Role.customer.toString(), a.id);
+        if(a.role == Role.representative)
+            db.update("UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, role = ? WHERE id = ?",a.username, a.password, a.first_name, a.last_name, Role.representative.toString(), a.id);
+    
     }
 
     public void delete(int id) {
