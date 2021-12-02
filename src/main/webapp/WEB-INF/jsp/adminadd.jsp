@@ -13,6 +13,7 @@
                 <c:choose>
                     <c:when test="${user.role() == 'admin'}">
                         <h1>Add a user</h1>
+                        <p>Note that you cannot add another admin.</p>
                         <p>${message}</p>
                         <form action="/adminadd" method="POST">
                             Username: <input type="text" name="username"/>
