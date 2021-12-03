@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserSvc {
-    public enum Role {admin, representative, customer}
+    enum Role {ADMIN, REPRESENTATIVE, CUSTOMER}
+
     public static record User(Integer id, String username, String password, String first_name, String last_name, Role role) implements Serializable {
         private static User mapper(ResultSet rs, int i) throws SQLException {
             return new User(
@@ -20,7 +21,7 @@ public class UserSvc {
                 rs.getString("password"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
-                Role.valueOf(rs.getString("role")));
+                Role.valueOf(rs.getString("role").toUpperCase()));
         }
     }
 
@@ -55,7 +56,7 @@ public class UserSvc {
                 user.password(),
                 user.first_name(),
                 user.last_name(),
-                Role.customer.toString());
+                Role.CUSTOMER.toString());
 
             return findByUsername(user.username());
         } else {

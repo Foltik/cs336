@@ -8,7 +8,7 @@
         <title>Airlines</title>
     </head>
     <body>
-        Name: 
+        Name:
         <form action="/airlines" method="POST">
             <input type="text" name="name"/>
             <input type="submit" value="Create"/>
@@ -21,6 +21,7 @@
                     <li>Name:
                         <form action="/airlines" method="POST">
                             <input type="text" name="name" value="${a.name()}"/>
+                            <input type="number" name="name" value="${a.name()}"/>
                             <input type="hidden" name="id" value="${a.id()}"/>
                             <input type="hidden" name="_method" value="PUT"/>
                             <input type="submit" value="Update"/>
