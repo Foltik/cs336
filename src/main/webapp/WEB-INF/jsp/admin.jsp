@@ -47,6 +47,7 @@
                             <li><a href="/admindelete">Delete a user</a></li>
                             <li><a href="/adminactiveflights">List of most active flights</a></li>
                             <li><a href="/admintopcustomer">Get best customer</a></li>
+                            <li><a href="/adminsalesreport">Get sales report</a></li>
                         </ul>
                     </c:when>
                     <c:otherwise>

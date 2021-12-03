@@ -27,6 +27,10 @@ public class ReportSvc {
         return db.find("SELECT * FROM (select user.id, sum(fare) count from user, booking where user.id=booking.customer_id GROUP BY user.id order by count desc LIMIT 1) as a", GenericResult::mapper);
     }
 
+    public List<GenericResult> GetSales(){
+        return db.index("select * from (select month(purchased_on) id, fare count from booking) a group by a.id", GenericResult::mapper);
+    }
+
     @Autowired
     private Database db;
 
