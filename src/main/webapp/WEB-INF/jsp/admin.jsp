@@ -45,6 +45,7 @@
                             <li><a href="/adminadd">Add a user</a></li>
                             <li><a href="/adminedit">Edit a user</a></li>
                             <li><a href="/admindelete">Delete a user</a></li>
+                            <li><a href="/adminactiveflights">List of most active flights</a></li>
                         </ul>
                     </c:when>
                     <c:otherwise>
