@@ -28,7 +28,7 @@ public class AircraftSvc {
 
     @Autowired
     private AirlineSvc airlines;
-    
+
     public Airline getAirline(Aircraft aircraft) {
         return airlines.findById(aircraft.airline_id()).orElseThrow();
     }
@@ -39,5 +39,17 @@ public class AircraftSvc {
 
     public Optional<Aircraft> findById(int id) {
         return db.find("SELECT * FROM aircraft WHERE id = ?", Aircraft::mapper, id);
+    }
+
+    public void update(Aircraft a){
+        db.update("UPDATE aircraft SET model = ? WHERE id = ?", a.model, a.id);
+    }
+
+    public void create(Aircraft a){
+        db.insert("INSERT INTO aircraft (model) VALUES (?)", a.model);
+    }
+
+    public void delete(int id){
+        db.delete("DELETE FROM airline WHERE id = ?", id);
     }
 }

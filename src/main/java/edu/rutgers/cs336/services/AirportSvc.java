@@ -29,4 +29,20 @@ public class AirportSvc {
     public Optional<Airport> findById(int id) {
         return db.find("SELECT * FROM airport WHERE id = ?", Airport::mapper, id);
     }
+
+    public void update(Airport a){
+        db.update("UPDATE airport SET name = ? WHERE id = ?", a.name, a.id);
+    }
+    public void create(Airport a){
+        db.insert("INSERT INTO airport (name) VALUES (?)", a.name);
+    }
+
+    public void delete(int id){
+        db.delete("DELETE FROM airport WHERE id = ?", id);
+    }
+
+    public void flightList(){
+
+    }
+
 }

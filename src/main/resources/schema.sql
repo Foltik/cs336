@@ -69,19 +69,14 @@ CREATE TABLE IF NOT EXISTS flight (
     to_airport_id INT NOT NULL,
     takeoff_time DATETIME NOT NULL,
     landing_time DATETIME NOT NULL,
-    type ENUM('domestic', 'international') NOT NULL,
-    direction ENUM('one_way', 'round_trip') NOT NULL,
+    days VARCHAR(64) NOT NULL,
+    domain ENUM('domestic', 'international') NOT NULL,
+    type ENUM('one_way', 'round_trip') NOT NULL,
+    fare DECIMAL NOT NULL,
     FOREIGN KEY (aircraft_id) REFERENCES aircraft (id) ON DELETE CASCADE,
     FOREIGN KEY (to_airport_id) REFERENCES airport (id) ON DELETE CASCADE,
     FOREIGN KEY (from_airport_id) REFERENCES airport (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS flight_day (
-    flight_id INT NOT NULL,
-    day ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
-    FOREIGN KEY (flight_id) REFERENCES flight (id),
-    PRIMARY KEY (flight_id, day)
 );
 
 

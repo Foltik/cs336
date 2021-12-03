@@ -17,21 +17,21 @@ public class BookingSvc {
     enum Type {FIRST_CLASS, BUSINESS, ECONOMY};
 
     public static record Booking(
-        Integer id, 
-        Integer customer_id, 
-        Float fare,
+        Integer id,
+        Integer customer_id,
         LocalDateTime created_on,
         LocalDateTime purchased_on,
-        Type type
+        Type type,
+        Float fare
     ) implements Serializable {
         private static Booking mapper(ResultSet rs, int i) throws SQLException {
             return new Booking(
                 rs.getInt("id"),
                 rs.getInt("customer_id"),
-                rs.getFloat("fare"),
                 rs.getTimestamp("takeoff_time").toLocalDateTime(),
                 rs.getTimestamp("landing_time").toLocalDateTime(),
-                Type.valueOf(rs.getString("type").toUpperCase()));
+                Type.valueOf(rs.getString("type").toUpperCase()),
+                rs.getFloat("fare"));
         }
     }
 
