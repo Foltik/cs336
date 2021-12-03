@@ -24,7 +24,7 @@ public class ReportSvc {
     }
 
     public Optional<GenericResult> TopCustomer() {
-        return db.find("select user.id, MAX(fare) count from user, booking where user.id = booking.customer_id", GenericResult::mapper);
+        return db.find("SELECT * FROM (select user.id, sum(fare) count from user, booking where user.id=booking.customer_id GROUP BY user.id order by count desc LIMIT 1) as a", GenericResult::mapper);
     }
 
     @Autowired
