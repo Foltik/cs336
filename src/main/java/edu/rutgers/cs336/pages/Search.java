@@ -4,14 +4,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +26,28 @@ import edu.rutgers.cs336.services.AirportSvc;
 import edu.rutgers.cs336.services.FlightSvc;
 import edu.rutgers.cs336.services.AirportSvc.Airport;
 import edu.rutgers.cs336.services.FlightSvc.Flight;
-import edu.rutgers.cs336.services.FlightSvc.Type;
+import edu.rutgers.cs336.services.BookingSvc.Type;
 
 @Controller
 @RequestMapping("/search")
 public class Search {
     private static int FLEX = 1;
 
-    enum Sort {PRICE, TAKEOFF, LANDING, DURATION};
-    enum Direction {ASCENDING, DESCENDING};
+    public enum Direction {ONE_WAY, ROUND_TRIP};
+    enum Sort {PRICE, DURATION, STOPS, TAKEOFF, LANDING};
+    enum Order {ASCENDING, DESCENDING};
+
+    enum Filter {
+        NONE, GREATER, LESS;
+
+        public <T extends Comparable<T>> boolean apply(T a, T b) {
+            return switch (this) {
+                case NONE -> true;
+                case GREATER -> a.compareTo(b) < 0;
+                case LESS -> a.compareTo(b) > 0;
+            };
+        }
+    }
 
     public static record Query(
         Integer origin,
@@ -49,10 +61,29 @@ public class Search {
         LocalDate arrival,
         Boolean arrival_flexible,
 
+        Direction direction,
+
         Type type,
 
         Sort sort,
-        Direction direction
+        Order order,
+
+        Float price,
+        Filter price_filter,
+
+        Long duration,
+        Filter duration_filter,
+
+        Long stops,
+        Filter stops_filter,
+
+        @DateTimeFormat(pattern = "HH:mm")
+        LocalTime takeoff,
+        Filter takeoff_filter,
+
+        @DateTimeFormat(pattern = "HH:mm")
+        LocalTime landing,
+        Filter landing_filter
     ) {
         public Boolean departure_flexible() {
             return departure_flexible == null ? false : departure_flexible;
@@ -63,17 +94,15 @@ public class Search {
         }
     };
 
-    public static record Trip(List<Flight> flights) {
+    public static record Trip(Type type, List<Flight> flights) {
         public float price() {
-            return flights.stream()
+            return type.priceMultiplier() * flights.stream()
                 .map(Flight::fare)
                 .reduce(0.0f, Float::sum);
         }
 
         public long duration() {
-            return flights.stream()
-                .map(f -> f.takeoff_time().until(f.landing_time(), ChronoUnit.MINUTES))
-                .reduce(0L, Long::sum);
+            return takeoff_time().until(landing_time(), ChronoUnit.MINUTES);
         }
 
         public LocalTime takeoff_time() {
@@ -83,68 +112,83 @@ public class Search {
         public LocalTime landing_time() {
             return flights.get(flights.size() - 1).landing_time();
         }
-    }
 
-    private boolean valid(LocalDate date, Set<DayOfWeek> days, boolean flexible) {
-        if (flexible) {
-            return days.stream().filter(day -> {
-                var next = date.with(TemporalAdjusters.nextOrSame(day));
-                var prev = date.with(TemporalAdjusters.previousOrSame(day));
-
-                return ChronoUnit.DAYS.between(date, next) <= FLEX
-                    || ChronoUnit.DAYS.between(prev, date) <= FLEX;
-            }).findFirst().isPresent();
-        } else {
-            return days.contains(date.getDayOfWeek());
+        public long stops() {
+            return flights.size() - 1;
         }
     }
 
-    private List<Trip> oneWayTrips(LocalDate date, boolean flexible, Airport origin, Airport destination) {
-        // Map<Integer, Flight> flights = this.flights.index().stream()
-        //     .collect(Collectors.toMap(f -> f.id(), f -> f));
-        // Map<Integer, Airport> airports = this.airports.index().stream()
-        //     .collect(Collectors.toMap(a -> a.id(), a -> a));
+    private Set<DayOfWeek> flexDays(LocalDate date, boolean flexible) {
+        var delta = flexible ? FLEX : 0;
 
-        // var origins = flights.values().stream()
-        //     .filter(f -> valid(query.departure(), f.days(), query.departure_flexible()))
-        //     .collect(Collectors.toList());
-
-        // var trips = new ArrayList<Trip>();
-        // for (var origin : origins) {
-        //     var visited = new HashSet<Flight>();
-
-        //     var fringe = new ArrayDeque<List<Flight>>();
-        //     fringe.add(new ArrayList<>(List.of(origin)));
-
-        //     while (!fringe.isEmpty()) {
-        //         var path = fringe.pop();
-        //         var flight = path.get(path.size() - 1);
-
-        //         // Add to trips if we've completed the flight
-        //         var valid = valid(query.arrival(), flight.days(), query.arrival_flexible());
-        //         if (flight.to_airport_id() == query.destination && valid) {
-        //             trips.add(new Trip(path));
-        //             continue;
-        //         } else {
-        //             visited.add(flight);
-        //         }
-
-        //         // Add the next flight to the fringe if not visited
-        //         var next = flights.get(flight.to_airport_id());
-        //         if (!visited.contains(next)) {
-        //             path.add(next);
-        //             fringe.add(path);
-        //         }
-        //     }
-        // }
-        return null;
+        var days = new HashSet<DayOfWeek>();
+        days.add(date.getDayOfWeek());
+        for (int i = 1; i <= delta; i++) {
+            days.add(date.plusDays(i).getDayOfWeek());
+            days.add(date.minusDays(i).getDayOfWeek());
+        }
+        return days;
     }
 
-    private List<Trip> roundTrips(LocalDate date, boolean flexible, Airport origin, Airport destination) {
-        return flights.index().stream()
-            .filter(f -> f.type().equals(Type.ROUND_TRIP) && valid(date, f.days(), flexible))
-            .map(f -> new Trip(List.of(f)))
+    // Find a sequence of one-way flights from origin to destination with breadth first search
+    private List<Trip> oneWayTrips(Type type, LocalDate date, boolean flexible, Airport origin, Airport destination) {
+        var flights = this.flights.index();
+
+        var trips = new ArrayList<Trip>();
+        for (var day : flexDays(date, flexible)) {
+            var origins = flights.stream()
+                .filter(f -> f.days().contains(day))
+                .filter(f -> f.from_airport_id() == origin.id())
+                .collect(Collectors.toList());
+
+            for (var o : origins) {
+                var visited = new HashSet<Flight>();
+
+                var fringe = new ArrayDeque<List<Flight>>();
+                fringe.add(new ArrayList<>(List.of(o)));
+
+                while (!fringe.isEmpty()) {
+                    var path = fringe.pop();
+                    var flight = path.get(path.size() - 1);
+
+                    if (flight.to_airport_id() == destination.id()) {
+                        // Add to trips if we've completed the flight
+                        trips.add(new Trip(type, path));
+                    } else {
+                        // Otherwise, explore all adjacent flights
+                        flights.stream()
+                            .filter(f -> f.days().contains(day))
+                            .filter(f -> f.from_airport_id() == flight.to_airport_id())
+                            .filter(f -> f.takeoff_time().isAfter(flight.landing_time()))
+                            .filter(f -> !visited.contains(f))
+                            .forEach(f -> {
+                                visited.add(f);
+                                var extended = new ArrayList<>(path);
+                                extended.add(f);
+                                fringe.add(extended);
+                            });
+                    }
+                }
+            }
+        }
+
+        return trips;
+    }
+
+    private <T extends Comparable<T>> List<Trip> filter(List<Trip> trips, Function<Trip, T> accessor, Filter filter, T val) {
+        if (val == null) return trips;
+        return trips.stream()
+            .filter(trip -> filter.apply(val, accessor.apply(trip)))
             .collect(Collectors.toList());
+    }
+
+    private List<Trip> filter(List<Trip> trips, Query q) {
+        trips = filter(trips, t -> t.price(), q.price_filter(), q.price());
+        trips = filter(trips, t -> t.duration(), q.duration_filter(), q.duration());
+        trips = filter(trips, t -> t.stops(), q.stops_filter(), q.stops());
+        trips = filter(trips, t -> t.takeoff_time(), q.takeoff_filter(), q.takeoff());
+        trips = filter(trips, t -> t.landing_time(), q.landing_filter(), q.landing());
+        return trips;
     }
 
     @Autowired
@@ -155,15 +199,22 @@ public class Search {
     @GetMapping
     public String index(Model model) {
         if (model.getAttribute("airports") == null)
-            model.addAttribute("airports", airports.index());
+            model.addAttribute("airports", airports.index().stream()
+                .collect(Collectors.toMap(a -> a.id(), a -> a)));
 
         if (model.getAttribute("query") == null)
             model.addAttribute("query", new Query(
                 null, null,
                 LocalDate.now(), true,
                 LocalDate.now(), true,
-                Type.ONE_WAY,
-                Sort.PRICE, Direction.ASCENDING));
+                Direction.ONE_WAY,
+                Type.ECONOMY,
+                Sort.PRICE, Order.ASCENDING,
+                null, Filter.NONE,
+                null, Filter.NONE,
+                null, Filter.NONE,
+                null, Filter.NONE,
+                null, Filter.NONE));
 
         return "search";
     }
@@ -176,27 +227,30 @@ public class Search {
         var origin = airports.findById(query.origin()).orElseThrow();
         var destination = airports.findById(query.destination()).orElseThrow();
 
-        List<Trip> trips = switch (query.type()) {
-            case ONE_WAY -> oneWayTrips(query.departure(), query.departure_flexible(), origin, destination);
-            case ROUND_TRIP -> query.departure() == query.arrival()
-                ? roundTrips(query.departure(), query.departure_flexible(), origin, destination)
-                : null;
-        };
+        // Find trips
+        var departing = oneWayTrips(query.type(), query.departure(), query.departure_flexible(), origin, destination);
+        var arriving = oneWayTrips(query.type(), query.arrival(), query.arrival_flexible(), destination, origin);
 
-        // Sorting
+        // Filter
+        departing = filter(departing, query);
+        arriving = filter(arriving, query);
+
+        // Sort
         var comparator = switch (query.sort()) {
             case PRICE -> Comparator.comparing(Trip::price);
             case DURATION -> Comparator.comparing(Trip::duration);
+            case STOPS -> Comparator.comparing(Trip::stops);
             case TAKEOFF -> Comparator.comparing(Trip::takeoff_time);
             case LANDING -> Comparator.comparing(Trip::landing_time);
         };
-        switch (query.direction()) {
+        switch (query.order()) {
             case ASCENDING: break;
             case DESCENDING: comparator = comparator.reversed();
         }
-        trips.sort(comparator);
-        model.addAttribute("trips", trips);
-
+        departing.sort(comparator);
+        arriving.sort(comparator);
+        model.addAttribute("departing", departing);
+        model.addAttribute("arriving", arriving);
 
         return index(model);
     }

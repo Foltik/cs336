@@ -14,7 +14,17 @@ import edu.rutgers.cs336.services.UserSvc.User;
 
 @Service
 public class BookingSvc {
-    enum Type {FIRST_CLASS, BUSINESS, ECONOMY};
+    public enum Type {
+        FIRST_CLASS, BUSINESS, ECONOMY;
+
+        public float priceMultiplier() {
+            return switch (this) {
+                case FIRST_CLASS -> 3.0f;
+                case BUSINESS -> 2.0f;
+                case ECONOMY -> 1.0f;
+            };
+        }
+    };
 
     public static record Booking(
         Integer id,
