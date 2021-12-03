@@ -71,7 +71,6 @@ CREATE TABLE IF NOT EXISTS flight (
     landing_time DATETIME NOT NULL,
     days VARCHAR(64) NOT NULL,
     domain ENUM('domestic', 'international') NOT NULL,
-    type ENUM('one_way', 'round_trip') NOT NULL,
     fare DECIMAL NOT NULL,
     FOREIGN KEY (aircraft_id) REFERENCES aircraft (id) ON DELETE CASCADE,
     FOREIGN KEY (to_airport_id) REFERENCES airport (id) ON DELETE CASCADE,

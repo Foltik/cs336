@@ -20,7 +20,6 @@ import edu.rutgers.cs336.services.AirportSvc.Airport;
 @Service
 public class FlightSvc {
     public enum Domain {DOMESTIC, INTERNATIONAL};
-    public enum Type {ONE_WAY, ROUND_TRIP};
     public enum Day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY};
 
     public static record Flight(
@@ -32,7 +31,6 @@ public class FlightSvc {
         LocalTime landing_time,
         Set<DayOfWeek> days,
         Domain domain,
-        Type type,
         Float fare
     ) implements Serializable {
         private static Flight mapper(ResultSet rs, int i) throws SQLException {
@@ -45,7 +43,6 @@ public class FlightSvc {
                 rs.getTimestamp("landing_time").toLocalDateTime().toLocalTime(),
                 Arrays.asList(rs.getString("days").split(",")).stream().map(DayOfWeek::valueOf).collect(Collectors.toSet()),
                 Domain.valueOf(rs.getString("domain").toUpperCase()),
-                Type.valueOf(rs.getString("type").toUpperCase()),
                 rs.getFloat("fare"));
         }
     }
