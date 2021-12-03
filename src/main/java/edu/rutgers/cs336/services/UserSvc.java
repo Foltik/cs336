@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserSvc {
-    enum Role {ADMIN, REPRESENTATIVE, CUSTOMER}
+    public enum Role {ADMIN, REPRESENTATIVE, CUSTOMER}
 
     public static record User(Integer id, String username, String password, String first_name, String last_name, Role role) implements Serializable {
         private static User mapper(ResultSet rs, int i) throws SQLException {
@@ -65,10 +65,10 @@ public class UserSvc {
     }
 
     public void update(User a) {
-        if(a.role == Role.customer)
-            db.update("UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, role = ? WHERE id = ?",a.username, a.password, a.first_name, a.last_name, Role.customer.toString(), a.id);
-        if(a.role == Role.representative)
-            db.update("UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, role = ? WHERE id = ?",a.username, a.password, a.first_name, a.last_name, Role.representative.toString(), a.id);
+        if(a.role == Role.CUSTOMER)
+            db.update("UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, role = ? WHERE id = ?",a.username, a.password, a.first_name, a.last_name, Role.CUSTOMER.toString(), a.id);
+        if(a.role == Role.REPRESENTATIVE)
+            db.update("UPDATE user SET username = ?, password = ?, first_name = ?, last_name = ?, role = ? WHERE id = ?",a.username, a.password, a.first_name, a.last_name, Role.REPRESENTATIVE.toString(), a.id);
     
     }
 
@@ -78,7 +78,7 @@ public class UserSvc {
 
     public List<User> getCustomersReps()
     {
-        return db.index("SELECT * FROM user WHERE NOT user.role='admin'",User::mapper);
+        return db.index("SELECT * FROM user WHERE NOT user.role='ADMIN'",User::mapper);
     }
     public Optional<User> registerRep(User user) {
         var existing = findByUsername(user.username());
@@ -89,7 +89,7 @@ public class UserSvc {
                 user.password(),
                 user.first_name(),
                 user.last_name(),
-                Role.representative.toString());
+                Role.REPRESENTATIVE.toString());
 
             return findByUsername(user.username());
         } else {

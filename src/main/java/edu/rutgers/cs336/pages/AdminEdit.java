@@ -50,7 +50,7 @@ public class AdminEdit {
                 first_name = orig.get().first_name();
             if(last_name == "")
                 last_name = orig.get().last_name();
-            if(role != Role.admin && role != Role.representative && role != Role.customer)
+            if(role != Role.ADMIN && role != Role.REPRESENTATIVE && role != Role.CUSTOMER)
                 role = orig.get().role();
 
             User usr = new User(id, username, password, first_name, last_name, role);

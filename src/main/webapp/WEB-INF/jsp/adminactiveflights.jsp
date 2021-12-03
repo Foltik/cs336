@@ -16,7 +16,7 @@
         <c:choose>
             <c:when test="${user != null}">
                 <c:choose>
-                    <c:when test="${user.role() == 'admin'}">
+                    <c:when test="${user.role() == 'ADMIN'}">
                         <h3>List of top 5 most active flights (tickets sold)</h3>
                         <p>Tickets are considered sold when the booking has status 'reserved', and not 'waiting'. Below is a list of those bookings.</p>
                         <table style="border:1px solid black;">

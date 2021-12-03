@@ -11,7 +11,7 @@
         <c:choose>
             <c:when test="${user != null}">
                 <c:choose>
-                    <c:when test="${user.role() == 'admin'}">
+                    <c:when test="${user.role() == 'ADMIN'}">
                         <h1>Add a user</h1>
                         <p>Note that you cannot add another admin.</p>
                         <p>${message}</p>
@@ -20,7 +20,11 @@
                             Password: <input type="text" name="password"/>
                             First Name: <input type="text" name="first_name"/>
                             Last Name: <input type="text" name="last_name"/>
-                            Role: <input type="text" name="role"/>
+                            Role: 
+                            <select name="role">
+                                <option value="CUSTOMER">Customer</option>
+                                <option value="REPRESENTATIVE">Representative</option>
+                            </select>
                             <input type="hidden" name="_method" value="PUT"/>
                             <input type="submit" value="Add"/>
                         </form>

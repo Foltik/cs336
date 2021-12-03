@@ -17,7 +17,7 @@
         <c:choose>
             <c:when test="${user != null}">
                 <c:choose>
-                    <c:when test="${user.role() == 'admin'}">
+                    <c:when test="${user.role() == 'ADMIN'}">
                         <h1>Welcome to admin page, ${user.first_name()} ${user.last_name()}</h1>
                         <h3>Current registered customers and customer representatives:</h3>
                         <table style="border:1px solid black;">

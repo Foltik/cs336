@@ -30,7 +30,7 @@ public class AdminAdd {
 
     @PutMapping
     public String register(@ModelAttribute User form, HttpSession session, Model model) {
-        if(form.role() == Role.representative)
+        if(form.role() == Role.REPRESENTATIVE)
         {
             users.registerRep(form).ifPresentOrElse(user -> {
                 model.addAttribute("message", "Successfully registered user!");
