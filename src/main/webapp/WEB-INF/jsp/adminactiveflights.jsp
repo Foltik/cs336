@@ -26,7 +26,7 @@
                             </tr>
                             <c:forEach var="item" items="${list}">
                                 <tr>
-                                    <td><c:out value="${item.flight_id()}"/> </td>
+                                    <td><c:out value="${item.id()}"/> </td>
                                     <td><c:out value="${item.count()}"/> </td>
                                 </tr>
                             </c:forEach>

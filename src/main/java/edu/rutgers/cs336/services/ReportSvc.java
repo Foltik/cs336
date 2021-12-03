@@ -11,16 +11,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReportSvc {
-    public static record TopFlights(Integer flight_id, Integer count) implements Serializable {
-        private static TopFlights mapper(ResultSet rs, int i) throws SQLException {
-            return new TopFlights(
-                rs.getInt("flight_id"),
+    public static record GenericResult(Integer id, Integer count) implements Serializable {
+        private static GenericResult mapper(ResultSet rs, int i) throws SQLException {
+            return new GenericResult(
+                rs.getInt("id"),
                 rs.getInt("count"));
         }
     }
 
-    public List<TopFlights> index() {
-        return db.index("select flight_id, count(status) count from booking_flight where status='reserved' group by flight_id order by count desc LIMIT 5", TopFlights::mapper);
+    public List<GenericResult> TopFlights() {
+        return db.index("select flight_id id, count(status) count from booking_flight where status='reserved' group by flight_id order by count desc LIMIT 5", GenericResult::mapper);
+    }
+
+    public Optional<GenericResult> TopCustomer() {
+        return db.find("select user.id, MAX(fare) count from user, booking where user.id = booking.customer_id", GenericResult::mapper);
     }
 
     @Autowired
