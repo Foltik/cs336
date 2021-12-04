@@ -2,6 +2,11 @@
 
 mysql -u cs336 -p"cs336" -D cs336 <<EOF
 
+insert into user (username, password, first_name, last_name, role) values ("cust1", "cust1", "Cust1first", "Cust1last", "customer");
+insert into user (username, password, first_name, last_name, role) values ("cust2", "cust2", "Cust2first", "Cust2last", "customer");
+insert into user (username, password, first_name, last_name, role) values ("rep", "rep", "Repfirst", "Replast", "representative");
+insert into user (username, password, first_name, last_name, role) values ("admin", "admin", "Adminfirst", "Adminlast", "admin");
+
 insert into airport (name) values ("New York");
 insert into airport (name) values ("Denver");
 insert into airport (name) values ("Orlando");
