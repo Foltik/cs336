@@ -33,7 +33,7 @@ public class FlightSvc {
         Domain domain,
         Float fare
     ) implements Serializable {
-        private static Flight mapper(ResultSet rs, int i) throws SQLException {
+        public static Flight mapper(ResultSet rs, int i) throws SQLException {
             return new Flight(
                 rs.getInt("id"),
                 rs.getInt("aircraft_id"),
@@ -67,6 +67,16 @@ public class FlightSvc {
 
     public Airport getFromAirport(Flight flight) {
         return airports.findById(flight.from_airport_id()).orElseThrow();
+    }
+
+    public int getRemainingSeats(Flight flight) {
+        return db.count(
+            "SELECT "
+          + "(SELECT seats FROM aircraft WHERE id IN (SELECT aircraft_id FROM flight WHERE id = ?))"
+          + " - "
+          + "(SELECT COUNT(*) FROM booking JOIN booking_flight ON (booking_flight.booking_id = booking.id)"
+          + "    WHERE booking_flight.status = 'reserved' AND flight_id = ?)",
+          flight.id(), flight.id());
     }
 
     public List<Flight> index() {
