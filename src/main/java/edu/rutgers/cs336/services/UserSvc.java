@@ -14,7 +14,7 @@ public class UserSvc {
     public enum Role {ADMIN, REPRESENTATIVE, CUSTOMER}
 
     public static record User(Integer id, String username, String password, String first_name, String last_name, Role role) implements Serializable {
-        private static User mapper(ResultSet rs, int i) throws SQLException {
+        public static User mapper(ResultSet rs, int i) throws SQLException {
             return new User(
                 rs.getInt("id"),
                 rs.getString("username"),

@@ -20,7 +20,6 @@ import edu.rutgers.cs336.services.AirportSvc.Airport;
 @Service
 public class FlightSvc {
     public enum Domain {DOMESTIC, INTERNATIONAL};
-    public enum Type {ONE_WAY, ROUND_TRIP};
     public enum Day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY};
 
     public static record Flight(
@@ -32,10 +31,9 @@ public class FlightSvc {
         LocalTime landing_time,
         Set<DayOfWeek> days,
         Domain domain,
-        Type type,
         Float fare
     ) implements Serializable {
-        private static Flight mapper(ResultSet rs, int i) throws SQLException {
+        public static Flight mapper(ResultSet rs, int i) throws SQLException {
             return new Flight(
                 rs.getInt("id"),
                 rs.getInt("aircraft_id"),
@@ -45,7 +43,6 @@ public class FlightSvc {
                 rs.getTimestamp("landing_time").toLocalDateTime().toLocalTime(),
                 Arrays.asList(rs.getString("days").split(",")).stream().map(DayOfWeek::valueOf).collect(Collectors.toSet()),
                 Domain.valueOf(rs.getString("domain").toUpperCase()),
-                Type.valueOf(rs.getString("type").toUpperCase()),
                 rs.getFloat("fare"));
         }
     }
@@ -70,6 +67,16 @@ public class FlightSvc {
 
     public Airport getFromAirport(Flight flight) {
         return airports.findById(flight.from_airport_id()).orElseThrow();
+    }
+
+    public int getRemainingSeats(Flight flight) {
+        return db.count(
+            "SELECT "
+          + "(SELECT seats FROM aircraft WHERE id IN (SELECT aircraft_id FROM flight WHERE id = ?))"
+          + " - "
+          + "(SELECT COUNT(*) FROM booking JOIN booking_flight ON (booking_flight.booking_id = booking.id)"
+          + "    WHERE booking_flight.status = 'reserved' AND flight_id = ?)",
+          flight.id(), flight.id());
     }
 
     public List<Flight> index() {

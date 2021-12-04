@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +50,12 @@ public class Database {
 
     public void delete(String sql, Object ...args) {
         db.update(sql, args);
+    }
+
+    public int count(String sql, Object ...args) {
+        return db.query(sql, (ResultSetExtractor<Integer>)rs -> {
+            rs.next();
+            return rs.getInt(1);
+        }, args);
     }
 }
