@@ -10,29 +10,6 @@ CREATE TABLE IF NOT EXISTS user (
 
 
 
-CREATE TABLE IF NOT EXISTS booking (
-    id INT NOT NULL AUTO_INCREMENT,
-    customer_id INT NOT NULL,
-    fare DECIMAL NOT NULL,
-    created_on TIMESTAMP NOT NULL,
-    purchased_on TIMESTAMP,
-    type ENUM('first_class', 'business', 'economy') NOT NULL,
-    FOREIGN KEY (customer_id) REFERENCES user (id) ON DELETE CASCADE,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS booking_flight (
-    booking_id INT NOT NULL,
-    flight_id INT NOT NULL,
-    seat INT NOT NULL,
-    status ENUM('waiting', 'reserved') NOT NULL,
-    FOREIGN KEY (booking_id) REFERENCES booking (id) ON DELETE CASCADE,
-    FOREIGN KEY (flight_id) REFERENCES booking (id) ON DELETE CASCADE,
-    PRIMARY KEY (flight_id, booking_id)
-);
-
-
-
 CREATE TABLE IF NOT EXISTS airport (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(64) NOT NULL,
@@ -103,4 +80,28 @@ CREATE TABLE IF NOT EXISTS question_answer (
     FOREIGN KEY (question_id) REFERENCES question (id) ON DELETE CASCADE,
     FOREIGN KEY (answer_id) REFERENCES answer (id) ON DELETE CASCADE,
     PRIMARY KEY (question_id, answer_id)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS booking (
+    id INT NOT NULL AUTO_INCREMENT,
+    customer_id INT NOT NULL,
+    type ENUM('first_class', 'business', 'economy') NOT NULL,
+    fare DECIMAL NOT NULL,
+    status ENUM('waiting', 'reserved') NOT NULL,
+    created_on TIMESTAMP NOT NULL,
+    purchased_on TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES user (id) ON DELETE CASCADE,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS booking_flight (
+    booking_id INT NOT NULL,
+    flight_id INT NOT NULL,
+    status ENUM('waiting', 'reserved') NOT NULL,
+    updated TIMESTAMP NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES booking (id) ON DELETE CASCADE,
+    FOREIGN KEY (flight_id) REFERENCES flight (id) ON DELETE CASCADE,
+    PRIMARY KEY (flight_id, booking_id)
 );
