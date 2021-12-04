@@ -128,9 +128,17 @@
         </form>
         <h2>Departing Trips</h2>
         <ul>
-            <c:forEach items="${departing}" var="t">
+            <c:forEach items="${departing}" var="t" varStatus="loop">
             <li>
                 <ul>
+                    <li>
+                        <form target="_blank" action="/bookings" method="POST">
+                            <b>${departingFull.get(loop.index) ? "Fullly Booked" : "Available"}</b>
+                            <input type="hidden" name="type" value="${query.type()}" />
+                            <input type="hidden" name="ids" value="${ids.apply(t)}" />
+                            <input type="submit" value="${departingFull.get(loop.index) ? 'Join Waitlist' : 'Book'}" />
+                        </form>
+                    </li>
                     <li>Price: ${t.price()}</li>
                     <li>Duration: ${t.duration()} minutes</li>
                     <li>Stops: ${t.stops()}</li>
@@ -147,6 +155,7 @@
                                     <li>Landing Time: ${f.landing_time()}</li>
                                     <li>Domain: ${f.domain()}</li>
                                     <li>Fare: ${f.fare()}</li>
+                                    <li>Remaining Seats: ${seats.get(f.id())}</li>
                                 </ul>
                             </li>
                             </c:forEach>
@@ -162,6 +171,12 @@
             <c:forEach items="${arriving}" var="t">
             <li>
                 <ul>
+                    <li>
+                        <form target="_blank" action="/bookings" method="POST">
+                            <b>${arrivingFull.get(loop.index) ? "Fullly Booked" : "Available"}</b>
+                            <input type="submit" value="${arrivingFull.get(loop.index) ? 'Join Waitlist' : 'Book'}" />
+                        </form>
+                    </li>
                     <li>Price: ${t.price()}</li>
                     <li>Duration: ${t.duration()} minutes</li>
                     <li>Takeoff Time: ${t.takeoff_time()}</li>

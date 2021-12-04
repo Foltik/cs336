@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -251,6 +252,30 @@ public class Search {
         arriving.sort(comparator);
         model.addAttribute("departing", departing);
         model.addAttribute("arriving", arriving);
+
+        // Get remaining seats for each flight
+        var seats = Stream.of(departing, arriving)
+            .flatMap(trips -> trips.stream())
+            .flatMap(trip -> trip.flights.stream())
+            .distinct()
+            .collect(Collectors.toMap(
+                f -> f.id(),
+                f -> flights.getRemainingSeats(f)));
+        model.addAttribute("seats", seats);
+
+        // Pre compute full status for trips
+        var departingFull = departing.stream()
+            .map(trip -> trip.flights().stream().anyMatch(f -> seats.get(f.id()) == 0))
+            .collect(Collectors.toList());
+        var arrivingFull = arriving.stream()
+            .map(trip -> trip.flights().stream().anyMatch(f -> seats.get(f.id()) == 0))
+            .collect(Collectors.toList());
+        model.addAttribute("departingFull", departingFull);
+        model.addAttribute("arrivingFull", arrivingFull);
+
+        model.addAttribute("ids", (Function<Trip, String>)(Trip trip) -> trip.flights().stream()
+            .map(f -> f.id().toString())
+            .collect(Collectors.joining(",")));
 
         return index(model);
     }
