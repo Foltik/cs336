@@ -30,6 +30,7 @@ public class adminresbycust {
     {
         List<ReportReservations> list = rep.GetReservationsByCust(form);
         model.addAttribute("list", list);
+        model.addAttribute("customer", form.username());
         return index(session, model);
     }
 }

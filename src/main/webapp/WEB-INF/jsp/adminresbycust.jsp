@@ -19,11 +19,11 @@
                     <c:when test="${user.role() == 'ADMIN'}">
                         <h1>Get reservations by Customer</h1>
                         <form action="/adminresbycust" method="POST">
-                            First name: <input type="text" name="first_name"/>
-                            Last name: <input type="text" name="last_name"/>
+                            Customer username: <input type="text" name="username"/>
                             <input type="hidden" name="_method" value="PUT"/>
                             <input type="submit" value="Get"/>
                         </form>
+                        <p>Selected customer: ${customer}</p>
                         <table style="border:1px solid black;">
                             <tr>
                                 <th>flight ID</th>

@@ -59,7 +59,7 @@ public class ReportSvc {
 
     public List<ReportReservations> GetReservationsByCust(User a)
     {
-        return db.index("SELECT flight_id a_id, fare, purchased_on FROM booking b, booking_flight bf, user u WHERE bf.booking_id = b.id AND b.customer_id=u.id AND u.first_name=? AND u.last_name=?", ReportReservations::mapper,a.first_name(), a.last_name());
+        return db.index("SELECT flight_id a_id, fare, purchased_on FROM booking b, booking_flight bf, user u WHERE bf.booking_id = b.id AND b.customer_id=u.id AND u.username=?", ReportReservations::mapper,a.username());
     }
 
     
