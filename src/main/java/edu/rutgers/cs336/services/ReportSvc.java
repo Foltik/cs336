@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import edu.rutgers.cs336.services.UserSvc.User;
 
 @Service
 public class ReportSvc {
@@ -42,10 +43,10 @@ public class ReportSvc {
         return db.index("select month(purchased_on) m, sum(fare) fare from booking group by m", SalesResult::mapper);
     }
 
-    public static record ReportReservations(Integer customer_id, Integer fare, String purchased_on) implements Serializable {
+    public static record ReportReservations(Integer a_id, Integer fare, String purchased_on) implements Serializable {
         private static ReportReservations mapper(ResultSet rs, int i) throws SQLException {
             return new ReportReservations(
-                rs.getInt("customer_id"),
+                rs.getInt("a_id"),
                 rs.getInt("fare"),
                 rs.getString("purchased_on"));
         }
@@ -53,7 +54,12 @@ public class ReportSvc {
 
     public List<ReportReservations> GetReservationsByID(int id)
     {
-        return db.index("select customer_id, fare, purchased_on from booking as b, booking_flight as bf WHERE bf.flight_id=? AND bf.booking_id=b.id", ReportReservations::mapper,id);
+        return db.index("select customer_id a_id, fare, purchased_on from booking as b, booking_flight as bf WHERE bf.flight_id=? AND bf.booking_id=b.id", ReportReservations::mapper,id);
+    }
+
+    public List<ReportReservations> GetReservationsByCust(User a)
+    {
+        return db.index("SELECT flight_id a_id, fare, purchased_on FROM booking b, booking_flight bf, user u WHERE bf.booking_id = b.id AND b.customer_id=u.id AND u.first_name=? AND u.last_name=?", ReportReservations::mapper,a.first_name(), a.last_name());
     }
 
     

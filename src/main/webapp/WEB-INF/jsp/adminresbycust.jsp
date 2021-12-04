@@ -17,15 +17,16 @@
             <c:when test="${user != null}">
                 <c:choose>
                     <c:when test="${user.role() == 'ADMIN'}">
-                        <h1>Get reservations by flight id</h1>
-                        <form action="/adminresbyflight" method="POST">
-                            Flight ID: <input type="text" name="a_id"/>
+                        <h1>Get reservations by Customer</h1>
+                        <form action="/adminresbycust" method="POST">
+                            First name: <input type="text" name="first_name"/>
+                            Last name: <input type="text" name="last_name"/>
                             <input type="hidden" name="_method" value="PUT"/>
                             <input type="submit" value="Get"/>
                         </form>
                         <table style="border:1px solid black;">
                             <tr>
-                                <th>Customer ID</th>
+                                <th>flight ID</th>
                                 <th>Fare paid</th>
                                 <th>Purchased on</th>
                             </tr>
