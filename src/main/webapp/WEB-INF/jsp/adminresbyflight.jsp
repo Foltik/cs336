@@ -5,7 +5,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Sales report</title>
+        <title>Admin</title>
         <style>
             table,th,td {
                 border:1px solid black;
@@ -17,16 +17,23 @@
             <c:when test="${user != null}">
                 <c:choose>
                     <c:when test="${user.role() == 'ADMIN'}">
-                        <h3>Sales report per month</h3>
+                        <h1>Get reservations by flight id</h1>
+                        <form action="/adminresbyflight" method="POST">
+                            Flight ID: <input type="text" name="customer_id"/>
+                            <input type="hidden" name="_method" value="PUT"/>
+                            <input type="submit" value="Get"/>
+                        </form>
                         <table style="border:1px solid black;">
                             <tr>
-                                <th>Month</th>
-                                <th>Total Revenue</th>
+                                <th>Customer ID</th>
+                                <th>Fare paid</th>
+                                <th>Purchased on</th>
                             </tr>
                             <c:forEach var="item" items="${list}">
                                 <tr>
-                                    <td><c:out value="${item.m()}"/> </td>
+                                    <td><c:out value="${item.customer_id()}"/> </td>
                                     <td><c:out value="${item.fare()}"/> </td>
+                                    <td><c:out value="${item.purchased_on()}"/> </td>
                                 </tr>
                             </c:forEach>
                         </table>

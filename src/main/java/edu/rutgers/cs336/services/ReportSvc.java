@@ -19,6 +19,9 @@ public class ReportSvc {
         }
     }
 
+    @Autowired
+    private Database db;
+
     public List<GenericResult> TopFlights() {
         return db.index("select flight_id id, count(status) count from booking_flight where status='reserved' group by flight_id order by count desc LIMIT 5", GenericResult::mapper);
     }
@@ -27,11 +30,32 @@ public class ReportSvc {
         return db.find("SELECT * FROM (select user.id, sum(fare) count from user, booking where user.id=booking.customer_id GROUP BY user.id order by count desc LIMIT 1) as a", GenericResult::mapper);
     }
 
-    public List<GenericResult> GetSales(){
-        return db.index("select * from (select month(purchased_on) id, fare count from booking) a group by a.id", GenericResult::mapper);
+    public static record SalesResult(Integer m, Integer fare) implements Serializable {
+        private static SalesResult mapper(ResultSet rs, int i) throws SQLException {
+            return new SalesResult(
+                rs.getInt("m"),
+                rs.getInt("fare"));
+        }
     }
 
-    @Autowired
-    private Database db;
+    public List<SalesResult> GetSales(){
+        return db.index("select month(purchased_on) m, sum(fare) fare from booking group by m", SalesResult::mapper);
+    }
+
+    public static record ReportReservations(Integer customer_id, Integer fare, String purchased_on) implements Serializable {
+        private static ReportReservations mapper(ResultSet rs, int i) throws SQLException {
+            return new ReportReservations(
+                rs.getInt("customer_id"),
+                rs.getInt("fare"),
+                rs.getString("purchased_on"));
+        }
+    }
+
+    public List<ReportReservations> GetReservationsByID(int id)
+    {
+        return db.index("select customer_id, fare, purchased_on from booking as b, booking_flight as bf WHERE bf.flight_id=? AND bf.booking_id=b.id", ReportReservations::mapper,id);
+    }
+
+    
 
 }
