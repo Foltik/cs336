@@ -1,4 +1,4 @@
-package main.java.edu.rutgers.cs336.pages;
+package edu.rutgers.cs336.pages;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,8 @@ public class Qna {
     
     @Autowired
     private QuestionSvc question;
+    
+    @Autowired
     private AnswerSvc answer;
 
     @GetMapping
