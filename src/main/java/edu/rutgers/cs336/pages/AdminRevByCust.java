@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import edu.rutgers.cs336.services.ReportSvc;
 import edu.rutgers.cs336.services.ReportSvc.GenericResult;
 @Controller
-@RequestMapping("/adminrevbyflight")
-public class AdminRevByFlight {
+@RequestMapping("/adminrevbycust")
+public class AdminRevByCust {
     @Autowired
     private ReportSvc rep;
 
@@ -19,9 +19,9 @@ public class AdminRevByFlight {
     public String index(HttpSession session, Model model) {
         model.addAttribute("user", session.getAttribute("user"));
 
-        List<GenericResult> list = rep.RevByFlights();
+        List<GenericResult> list = rep.RevByCusts();
         model.addAttribute("list", list);
-        return "adminrevbyflight";
+        return "adminrevbycust";
     }
     
 }
