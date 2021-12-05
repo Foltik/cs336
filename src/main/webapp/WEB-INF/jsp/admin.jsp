@@ -50,6 +50,9 @@
                             <li><a href="/adminsalesreport">Get sales report</a></li>
                             <li><a href="/adminresbyflight">Get reservations by flight id</a></li>
                             <li><a href="/adminresbycust">Get reservations by customer</a></li>
+                            <li><a href="/adminrevbyflight">Get revenue by flight</a></li>
+                            <li><a href="/adminrevbyairline">Get revenue by airline</a></li>
+                            <li><a href="/adminrevbycust">Get revenue by customer</a></li>
                         </ul>
                     </c:when>
                     <c:otherwise>

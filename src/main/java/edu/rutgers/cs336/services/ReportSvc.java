@@ -31,6 +31,11 @@ public class ReportSvc {
         return db.find("SELECT * FROM (select user.id, sum(fare) count from user, booking where user.id=booking.customer_id GROUP BY user.id order by count desc LIMIT 1) as a", GenericResult::mapper);
     }
 
+    public List<GenericResult> RevByFlights()
+    {
+        return db.index("SELECT f.id, sum(b.fare) count FROM flight f, booking b, booking_flight bf WHERE bf.flight_id=f.id AND bf.booking_id=b.id GROUP BY f.id", GenericResult::mapper);
+    }
+
     public static record SalesResult(Integer m, Integer fare) implements Serializable {
         private static SalesResult mapper(ResultSet rs, int i) throws SQLException {
             return new SalesResult(
