@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AnswerSvc {
-    public static record Answer(Integer id, Integer representative_id, String body) implements Serializable {
+    public static record Answer(Integer id, Integer representative_id, String body, Integer qid) implements Serializable {
         private static Answer mapper(ResultSet rs, int i) throws SQLException {
             return new Answer(
                 rs.getInt("id"),
                 rs.getInt("representative_id"),
-                rs.getString("body"));
+                rs.getString("body"),
+                rs.getInt("qid"));
         }
     }
 

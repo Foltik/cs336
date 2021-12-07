@@ -12,13 +12,48 @@
             <h2>Logged in as: ${user.first_name()} ${user.last_name()}</h2>
         </c:if> 
         
-        <c:if test="${user.role == 'represenative'}"> <!--User is a represenative-->
-            
-        </c:if> 
+        <c:choose>
+            <c:when test="${user.role() == 'REPRESENTATIVE'}"> <!--User is a represenative, will be able to respond to questions-->
+                <h1>Questions and Answers</h1>
+                <c:forEach var="item" items="${qlist}"> <!--For every item in the answer list-->
+                    <h3>Question: </h3>
+                    ID: ${item.id()} <br>
+                    Title: ${item.title()} <br>
+                    Content: <br>
+                    ${item.body()}
+                    <br>
+                    <br>
+                    <c:forEach var="item2" items="${alist}"> <!--For every item in the answer list-->
+                        <c:if test="${item2.qid() == item.id()}">
+                            <h3>Answer: </h3>
+                            Content: <br>
+                            ${item2.body()}
+                            <br>
+                            <br>
+                        </c:if>
+                    </c:forEach>
+                </c:forEach>
 
-        <c:if test="${user.role == 'customer'}"> <!--User is a customer-->
-            
-        </c:if> 
+                <!--Form for allowing represenatives to answer questions-->
+                <form action="/login" method="POST">
+                    QuestionID: <input type="text" name="qid"/>
+                    Answer: <input type="text" name="abody"/>
+                    <input type="submit" value="Submit"/>
+                </form>
 
+            </c:when> 
+
+            <c:when test="${user.role() == 'CUSTOMER'}"> <!--User is a customer-->
+                
+
+
+
+
+            <form action="/login" method="POST">
+                Question: <input type="text" name="qid"/>
+                <input type="submit" value="Submit"/>
+            </form>
+            </c:when> 
+        </c:choose>
     </body>
 </html>

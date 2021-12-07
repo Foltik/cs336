@@ -20,6 +20,7 @@ import edu.rutgers.cs336.services.AnswerSvc;
 import edu.rutgers.cs336.services.AnswerSvc.Answer;
 import edu.rutgers.cs336.services.UserSvc;
 import edu.rutgers.cs336.services.UserSvc.User;
+import edu.rutgers.cs336.services.Database;
 
 @Controller
 @RequestMapping(value = "/qna") //so we can connect to the jsp page
@@ -31,21 +32,28 @@ public class Qna {
     @Autowired
     private AnswerSvc answer;
 
+    /*@Autowired
+    private Database db;*/
+
     @GetMapping
     public String index(HttpSession session, Model model) {
         model.addAttribute("user", session.getAttribute("user"));
 
-        List<Question> qlist = question.index();
-        List<Answer> alist = answer.index();
+        List<Question> qlist = question.index(); //The list of questions
+        List<Answer> alist = answer.index(); //The list of answers
 
         model.addAttribute("qlist", qlist);
         model.addAttribute("alist", alist);
 
         return "qna";
+
     }
 
+    
 
 }
+
+//Need method to match the question to answer, do the id move
 
 /*@Controller
 @RequestMapping("/qna")
