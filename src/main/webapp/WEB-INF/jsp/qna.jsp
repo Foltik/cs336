@@ -26,7 +26,9 @@
                     <c:forEach var="item2" items="${alist}"> <!--For every item in the answer list-->
                         <c:if test="${item2.qid() == item.id()}">
                             <h3>Answer: </h3>
-                            Content: <br>
+                            Answer ID: ${item2.id()} <br>
+                            ID of Question Answered: ${item2.qid()} <br>
+                            Answer: <br>
                             ${item2.body()}
                             <br>
                             <br>
@@ -35,12 +37,13 @@
                 </c:forEach>
 
                 <!--Form for allowing represenatives to answer questions-->
-                <form action="/repQNA" method="POST">
+                <form action="/qna" method="POST">
 
-                    QuestionID: <input type="text" name="qid"/>
+                    QuestionID: <input type="number" name="qid"/>
                     Answer: <input type="text" name="abody"/>
                     <input type="submit" value="Submit"/>
-
+                    <br>
+                    <br>
                     Look Up Question: <input type="text" name="qkeyword"/>
                     Look Up Answer: <input type="text" name="akeyword"/>
                     <input type="submit" value="Search"/>
@@ -52,7 +55,7 @@
                 <h1>Questions and Answers</h1>
                 <c:forEach var="item" items="${qlist}"> <!--For every item in the answer list-->
                     <h3>Question: </h3>
-                    ID: ${item.id()} <br>
+                    Question ID: ${item.id()} <br>
                     Title: ${item.title()} <br>
                     Content: <br>
                     ${item.body()}
@@ -61,7 +64,9 @@
                     <c:forEach var="item2" items="${alist}"> <!--For every item in the answer list-->
                         <c:if test="${item2.qid() == item.id()}">
                             <h3>Answer: </h3>
-                            Content: <br>
+                            Answer ID: ${item2.id()} <br>
+                            ID of Question Answered: ${item2.qid()} <br>
+                            Answer: <br>
                             ${item2.body()}
                             <br>
                             <br>
@@ -71,14 +76,16 @@
 
 
                 <!--Form for allowing customers to ask questions-->
-                <form action="/customerQNA" method="POST">
-                    Question: <input type="text" name="qid"/>
+                <form action="/qna" method="POST">
+                    Question Title: <input type="text" name="qtitle"/>
+                    Question: <input type="text" name="qbody"/>
                     <input type="submit" value="Submit"/>
-
+                    <br>
+                    <br>
                     Look Up Question: <input type="text" name="qkeyword"/>
                     Look Up Answer: <input type="text" name="akeyword"/>
                     <input type="submit" value="Search"/>
-                    
+
                 </form>
             </c:when> 
         </c:choose>

@@ -31,4 +31,8 @@ public class AnswerSvc {
     public Optional<Answer> findById(int id) {
         return db.find("SELECT * FROM answer WHERE id = ?", Answer::mapper, id);
     }
+
+    public void add(Answer answer) {
+        db.insert("INSERT INTO answer VALUES (?, ?, ?, ?)", answer.id(), answer.representative_id(), answer.body(), answer.qid());
+    }
 }

@@ -31,4 +31,10 @@ public class QuestionSvc {
     public Optional<Question> findById(int id) {
         return db.find("SELECT * FROM question WHERE id = ?", Question::mapper, id);
     }
+
+    public void add(Question question) {
+        db.insert("INSERT INTO question VALUES (?, ?, ?, ?)", question.id(), question.customer_id(), question.title(), question.body());
+    }
+
+
 }
