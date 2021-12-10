@@ -22,9 +22,6 @@ public class AirportSvc {
     }
 
     @Autowired
-    private FlightSvc flights;
-
-    @Autowired
     private Database db;
 
     public List<Airport> index() {

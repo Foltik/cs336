@@ -20,9 +20,9 @@ import edu.rutgers.cs336.services.FlightSvc.Flight;
 @Controller
 @RequestMapping("/representativefromflightlist")
 public class CustomerRepresentativeFromFlightList {
-    @Autowired 
+    @Autowired
     FlightSvc flights;
-    
+
     @Autowired
     AirportSvc airports;
 
@@ -32,10 +32,10 @@ public class CustomerRepresentativeFromFlightList {
         return "representativefromflightlist";
     }
 
-    @PutMapping 
+    @PutMapping
     String getFromFlightList(@ModelAttribute Flight flight, HttpSession session, Model model){
-        List<Flight> list = flights.getFromAirport(flight.from_airport_id());
-        model.addAttribute("list", list);
+        // List<Flight> list = flights.getFromAirport(flight.from_airport_id());
+        // model.addAttribute("list", list);
         return index(session, model);
     }
 }
