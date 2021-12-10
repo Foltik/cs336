@@ -50,6 +50,6 @@ public class AircraftSvc {
     }
 
     public void delete(int id){
-        db.delete("DELETE FROM airline WHERE id = ?", id);
+        db.delete("DELETE FROM aircraft WHERE id = ?", id);
     }
 }

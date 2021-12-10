@@ -91,13 +91,22 @@ public class FlightSvc {
         db.delete("DELETE FROM flight WHERE id = ?", id);
     }
 
-    public void create(Flight f) {
+    public Optional<Flight> create(Flight f) {
         String days = String.join(",", f.days().stream().map(DayOfWeek::toString).collect(Collectors.toList()));
+        var existing = findById(f.id);
 
-        // db.insert(sql, args);
-    }
+        if(existing.isEmpty()) {
+            db.insert("INSERT INTO flight (aircraft_id, from_airport_id, to_airport_id, takeoff_time, landing_time, days, domain, fare) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
+            f.aircraft_id, f.from_airport_id, f.to_airport_id, f.takeoff_time, f.landing_time, f.days, f.domain, f.fare);
+            return findById(f.id);
+        }else{
+                return Optional.empty();
+            }
+        }
 
     public void update(Flight f){
-        // db.update(sql, args);
+        db.update("UPDATE flight SET aircraft_id = ?, from_airport_id = ?, to_airport_id = ?, takeoff_time = ?, landing_time = ?, days = ?, domaine = ?, fare = ? WHERE id = ?", 
+        f.aircraft_id, f.from_airport_id, f.to_airport_id, f.takeoff_time, f.landing_time, f.days, f.domain, f.fare);
     }
+
 }
