@@ -50,7 +50,8 @@
                             <li><a href="/representatitiveaircraftupdate">Edit an Aircraft</a></li>
                             <li><a href="/representativeaircraftdelete">Delete an Aircraft</a></li>
                             <li><a href="/representativepasswaitinglist">List of passengers on waiting list</a></li>
-                            <li><a href="/representativeflightlist">List of all flights for a given airport</a></li>
+                            <li><a href="/representativefromflightlist">List of all flights from a given airport</a></li>
+                            <li><a href="/representativetoflightlist">List of all flights to a given airport</a></li>
                             <li><a href="/representativereply">Reply to a user's question</a></li>
                         </ul>
                     </c:when>

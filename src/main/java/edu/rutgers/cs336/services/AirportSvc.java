@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.rutgers.cs336.services.FlightSvc.Flight;
+
 @Service
 public class AirportSvc {
     public static record Airport(Integer id, String name) implements Serializable {
@@ -18,6 +20,9 @@ public class AirportSvc {
                 rs.getString("name"));
         }
     }
+
+    @Autowired
+    private FlightSvc flights;
 
     @Autowired
     private Database db;
@@ -39,10 +44,6 @@ public class AirportSvc {
 
     public void delete(int id){
         db.delete("DELETE FROM airport WHERE id = ?", id);
-    }
-
-    public void flightList(){
-
     }
 
 }
