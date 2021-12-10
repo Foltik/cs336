@@ -10,6 +10,7 @@
     <body>
         <c:if test="${user != null}"> <!--We can see that the user is not null-->
             <h2>Logged in as: ${user.first_name()} ${user.last_name()}</h2>
+            <a href="/login"><h3>Return To Login</h3></a>
         </c:if> 
         
         <c:choose>
@@ -121,14 +122,42 @@
                     <br>
                 </form>
 
-                <form action="/qna" method="GET">
+                <form action="/qna" method="POST">
                     Look Up Question: <input type="text" name="qkeyword"/>
                     Look Up Answer: <input type="text" name="akeyword"/>
                     <input type="submit" value="Search"/>
                     <br>
                     <br>
                 </form>
-                <h3>Search Results: </h3><br><br>
+                <h3>Search Results: </h3><br>
+
+                <c:if test="${qresults.size() > 0}">
+                    <c:forEach var="item" items="${qresults}"> <!--Question LookUp Results-->
+                        <h3>Question: </h3>
+                        ID: ${item.id()} <br>
+                        Title: ${item.title()} <br>
+                        Content: <br>
+                        ${item.body()} <br><br>
+                    </c:forEach>
+                </c:if>
+
+                <c:if test="${qresults.size() == 0}">
+                    <h3>NO QUESTION MATCHING KEYWORDS</h3>
+                </c:if>
+
+                <c:if test="${aresults.size() > 0}">
+                    <c:forEach var="item" items="${aresults}"> <!--Question LookUp Results-->
+                        <h3>Answer: </h3>
+                        Answer ID: ${item.id()} <br>
+                        ID of Question Answered: ${item.qid()} <br>
+                        Answer: <br>
+                        ${item.body()} <br><br>
+                    </c:forEach>
+                </c:if>
+
+                <c:if test="${aresults.size() == 0}">
+                    <h3>NO ANSWERS MATCHING KEYWORDS</h3>
+                </c:if>
 
                 
             </c:when> 
