@@ -38,7 +38,7 @@ public class AnswerSvc {
     }
 
     public List<Answer> findByKeyword(String keyword) {
-        if (keyword.equals("") || keyword == null){
+        if (keyword == null || keyword.equals("")){
             List<Answer> a = new ArrayList<Answer>();
             return a;
         }

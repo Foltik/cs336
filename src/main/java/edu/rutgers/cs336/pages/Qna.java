@@ -75,8 +75,12 @@ public class Qna {
         var user = (User)session.getAttribute("user");
         
         if (user.role() == Role.REPRESENTATIVE){
-            var a = new Answer(null, user.id(), form2.abody(), form2.qid());
-            answer.add(a);
+
+            if (form2 != null){
+                var a = new Answer(null, user.id(), form2.abody(), form2.qid());
+                answer.add(a);
+            }
+            
 
             if (form3 != null){
 
@@ -99,8 +103,13 @@ public class Qna {
             return index(session, model);
         }
 
-        var q = new Question(null, user.id(), form1.qtitle(), form1.qbody());
-        question.add(q);
+        //It is a customer
+
+        if (form1 != null){
+            var q = new Question(null, user.id(), form1.qtitle(), form1.qbody());
+            question.add(q);
+        }
+        
 
         if (form3 != null){
 
