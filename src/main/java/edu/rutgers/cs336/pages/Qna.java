@@ -1,6 +1,8 @@
 package edu.rutgers.cs336.pages;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,7 @@ public class Qna {
 
     private static record QuestionForm(String qtitle, String qbody) {}
     private static record AnswerForm(Integer qid, String abody) {}
+    private static record LookUpForm(String qkeyword, String akeyword) {}
     
     @Autowired
     private QuestionSvc question;
@@ -51,6 +54,7 @@ public class Qna {
         model.addAttribute("qlist", qlist);
         model.addAttribute("alist", alist);
 
+        
         return "qna";
 
     }
@@ -66,7 +70,7 @@ public class Qna {
     }*/
 
     @PostMapping//for when the customer asks the 
-    public String answerQuestion(@ModelAttribute QuestionForm form1, @ModelAttribute AnswerForm form2, HttpSession session, Model model) {
+    public String answerQuestion(@ModelAttribute QuestionForm form1, @ModelAttribute AnswerForm form2, @ModelAttribute LookUpForm form3, HttpSession session, Model model) {
         
         var user = (User)session.getAttribute("user");
         
@@ -74,15 +78,49 @@ public class Qna {
             var a = new Answer(null, user.id(), form2.abody(), form2.qid());
             answer.add(a);
 
+            if (form3 != null){
+
+                List<Question> qresults = question.findByKeyword(form3.qkeyword());
+                List<Answer> aresults = answer.findByKeyword(form3.akeyword());
+    
+                model.addAttribute("qresults", qresults);
+                model.addAttribute("aresults", aresults);
+    
+                return index(session, model);
+    
+            }
+    
+            List<Question> qresults = new ArrayList<Question>();
+            List<Answer> aresults = new ArrayList<Answer>();
+    
+            model.addAttribute("qresults", qresults);
+            model.addAttribute("aresults", aresults);
+
             return index(session, model);
         }
 
         var q = new Question(null, user.id(), form1.qtitle(), form1.qbody());
         question.add(q);
 
-        return index(session, model);
+        if (form3 != null){
 
-        
+            List<Question> qresults = question.findByKeyword(form3.qkeyword());
+            List<Answer> aresults = answer.findByKeyword(form3.akeyword());
+
+            model.addAttribute("qresults", qresults);
+            model.addAttribute("aresults", aresults);
+
+            return index(session, model);
+
+        }
+
+        List<Question> qresults = new ArrayList<Question>();
+        List<Answer> aresults = new ArrayList<Answer>();
+
+        model.addAttribute("qresults", qresults);
+        model.addAttribute("aresults", aresults);
+
+        return index(session, model);
 
     }
 
