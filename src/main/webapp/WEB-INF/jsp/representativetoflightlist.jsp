@@ -45,6 +45,5 @@
                 <a href="/login">Return to login</a>
             </c:otherwise>
         </c:choose>
-        
     </body>
 </html>
