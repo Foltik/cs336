@@ -12,7 +12,7 @@
             <c:when test="${user != null}">
                 <c:choose>
                     <c:when test="${user.role() == 'ADMIN'}">
-                        <h1>Edit a user</h1>
+                        <h1>Delete a user</h1>
                         <p>Enter ID to delete - This action cannot be reversed.</p>
                         <p>${message}</p>
                         <form action="/admindelete" method="POST">
