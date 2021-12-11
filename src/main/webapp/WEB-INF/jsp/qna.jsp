@@ -11,8 +11,8 @@
         <c:if test="${user != null}"> <!--We can see that the user is not null-->
             <h2>Logged in as: ${user.first_name()} ${user.last_name()}</h2>
             <a href="/login"><h3>Return To Login</h3></a>
-        </c:if> 
-        
+        </c:if>
+
         <c:choose>
             <c:when test="${user.role() == 'REPRESENTATIVE'}"> <!--User is a represenative, will be able to respond to questions-->
                 <h1>Questions and Answers</h1>
@@ -20,6 +20,7 @@
                     <h3>Question: </h3>
                     ID: ${item.id()} <br>
                     Title: ${item.title()} <br>
+                    Asker: ${users.get(item.customer_id()).first_name()} ${users.get(item.customer_id()).last_name()} <br>
                     Content: <br>
                     ${item.body()}
                     <br>
@@ -29,6 +30,7 @@
                             <h3>Answer: </h3>
                             Answer ID: ${item2.id()} <br>
                             ID of Question Answered: ${item2.qid()} <br>
+                            Answerer: ${users.get(item2.representative_id()).first_name()} ${users.get(item2.representative_id()).last_name()} <br>
                             Answer: <br>
                             ${item2.body()}
                             <br>
@@ -48,7 +50,7 @@
 
                 </form>
 
-                
+
                 <form action="/qna" method="POST">
                     Look Up Question: <input type="text" name="qkeyword"/>
                     Look Up Answer: <input type="text" name="akeyword"/>
@@ -56,14 +58,15 @@
                     <br>
                     <br>
                 </form>
-                
+
                 <h3>Search Results: </h3><br>
-   
+
                 <c:if test="${qresults.size() > 0}">
                     <c:forEach var="item" items="${qresults}"> <!--Question LookUp Results-->
                         <h3>Question: </h3>
                         ID: ${item.id()} <br>
                         Title: ${item.title()} <br>
+                        Asker: ${users.get(item.customer_id()).first_name()} ${users.get(item.customer_id()).last_name()} <br>
                         Content: <br>
                         ${item.body()} <br><br>
                     </c:forEach>
@@ -78,6 +81,7 @@
                         <h3>Answer: </h3>
                         Answer ID: ${item.id()} <br>
                         ID of Question Answered: ${item.qid()} <br>
+                        Answerer: ${users.get(item.representative_id()).first_name()} ${users.get(item.representative_id()).last_name()} <br>
                         Answer: <br>
                         ${item.body()} <br><br>
                     </c:forEach>
@@ -86,8 +90,8 @@
                 <c:if test="${aresults.size() == 0}">
                     <h3>NO ANSWERS MATCHING KEYWORDS</h3>
                 </c:if>
-                
-            </c:when> 
+
+            </c:when>
 
             <c:when test="${user.role() == 'CUSTOMER'}"> <!--User is a customer-->
                 <h1>Questions and Answers</h1>
@@ -95,6 +99,7 @@
                     <h3>Question: </h3>
                     Question ID: ${item.id()} <br>
                     Title: ${item.title()} <br>
+                    Asker: ${users.get(item.customer_id()).first_name()} ${users.get(item.customer_id()).last_name()} <br>
                     Content: <br>
                     ${item.body()}
                     <br>
@@ -104,6 +109,7 @@
                             <h3>Answer: </h3>
                             Answer ID: ${item2.id()} <br>
                             ID of Question Answered: ${item2.qid()} <br>
+                            Answerer: ${users.get(item2.representative_id()).first_name()} ${users.get(item2.representative_id()).last_name()} <br>
                             Answer: <br>
                             ${item2.body()}
                             <br>
@@ -136,6 +142,7 @@
                         <h3>Question: </h3>
                         ID: ${item.id()} <br>
                         Title: ${item.title()} <br>
+                        Asker: ${users.get(item.customer_id()).first_name()} ${users.get(item.customer_id()).last_name()} <br>
                         Content: <br>
                         ${item.body()} <br><br>
                     </c:forEach>
@@ -150,6 +157,7 @@
                         <h3>Answer: </h3>
                         Answer ID: ${item.id()} <br>
                         ID of Question Answered: ${item.qid()} <br>
+                        Answerer: ${users.get(item.representative_id()).first_name()} ${users.get(item.representative_id()).last_name()} <br>
                         Answer: <br>
                         ${item.body()} <br><br>
                     </c:forEach>
@@ -159,8 +167,8 @@
                     <h3>NO ANSWERS MATCHING KEYWORDS</h3>
                 </c:if>
 
-                
-            </c:when> 
+
+            </c:when>
         </c:choose>
     </body>
 </html>
