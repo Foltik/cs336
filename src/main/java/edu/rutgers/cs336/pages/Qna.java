@@ -76,7 +76,7 @@ public class Qna {
         
         if (user.role() == Role.REPRESENTATIVE){
 
-            if (form2 != null){
+            if (form2 != null && form2.qid() != null){
                 var a = new Answer(null, user.id(), form2.abody(), form2.qid());
                 answer.add(a);
             }
