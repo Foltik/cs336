@@ -3,6 +3,7 @@ package edu.rutgers.cs336.services;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +32,18 @@ public class QuestionSvc {
     public Optional<Question> findById(int id) {
         return db.find("SELECT * FROM question WHERE id = ?", Question::mapper, id);
     }
+
+    public void add(Question question) {
+        db.insert("INSERT INTO question VALUES (?, ?, ?, ?)", question.id(), question.customer_id(), question.title(), question.body());
+    }
+
+    public List<Question> findByKeyword(String keyword) {
+        if (keyword == null || keyword.equals("")){
+            List<Question> q = new ArrayList<Question>();
+            return q;
+        }
+        String query = "SELECT * FROM question WHERE title LIKE '%" + keyword + "%' OR body like '%" + keyword + "%'";
+        return db.index(query, Question::mapper);
+    }
+
 }

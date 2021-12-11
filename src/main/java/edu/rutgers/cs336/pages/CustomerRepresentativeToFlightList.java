@@ -18,9 +18,9 @@ import edu.rutgers.cs336.services.FlightSvc.Flight;
 @Controller
 @RequestMapping("/representativetoflightlist")
 public class CustomerRepresentativeToFlightList {
-    @Autowired 
+    @Autowired
     FlightSvc flights;
-    
+
     @Autowired
     AirportSvc airports;
 
@@ -30,7 +30,7 @@ public class CustomerRepresentativeToFlightList {
         return "representativetoflightlist";
     }
 
-    @PutMapping 
+    @PutMapping
     String getToFlightList(@ModelAttribute Flight flight, HttpSession session, Model model){
         List<Flight> list = flights.getFlightTo(flight);
         model.addAttribute("list", list);
