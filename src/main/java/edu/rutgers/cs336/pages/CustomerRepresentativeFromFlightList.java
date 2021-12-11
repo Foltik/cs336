@@ -34,7 +34,7 @@ public class CustomerRepresentativeFromFlightList {
 
     @PutMapping 
     String getFromFlightList(@ModelAttribute Flight flight, HttpSession session, Model model){
-        List<Flight> list = flights.getFromAirport(flight.from_airport_id());
+        List<Flight> list = flights.getFlightFrom(flight);
         model.addAttribute("list", list);
         return index(session, model);
     }

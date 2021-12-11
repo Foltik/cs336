@@ -53,6 +53,7 @@
                             <li><a href="/representativefromflightlist">List of all flights from a given airport</a></li>
                             <li><a href="/representativetoflightlist">List of all flights to a given airport</a></li>
                             <li><a href="/representativereply">Reply to a user's question</a></li>
+                            <li><a href="/representativereservation">Make flight reservations on behalf of users</a></li>
                         </ul>
                     </c:when>
                     <c:otherwise>

@@ -83,6 +83,14 @@ public class FlightSvc {
         return db.index("SELECT * FROM flight", Flight::mapper);
     }
 
+    public List<Flight> getFlightTo(Flight flight) {
+        return db.index("SELECT * FROM flight WHERE flight.to_airport_id = ?", Flight::mapper, flight.id);
+    }
+
+    public List<Flight> getFlightFrom(Flight flight) {
+        return db.index("SELECT * FROM flight WHERE flight.from_airport_id = ?", Flight::mapper, flight.id);
+    }
+
     public Optional<Flight> findById(int id) {
         return db.find("SELECT * FROM flight WHERE id = ?", Flight::mapper, id);
     }
