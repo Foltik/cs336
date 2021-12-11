@@ -35,5 +35,7 @@
             <input type="hidden" name="_method" value="PUT"/>
             <input type="submit" value="Register"/>
         </form>
+        <br>
+        <a href="/">Return to home page</a>
     </body>
 </html>
