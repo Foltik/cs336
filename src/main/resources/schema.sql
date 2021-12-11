@@ -70,17 +70,19 @@ CREATE TABLE IF NOT EXISTS answer (
     id INT NOT NULL AUTO_INCREMENT,
     representative_id INT NOT NULL,
     body TEXT,
+    qid INT NOT NULL,
     FOREIGN KEY (representative_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (qid) REFERENCES question (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS question_answer (
+/*CREATE TABLE IF NOT EXISTS question_answer (
     question_id INT NOT NULL,
     answer_id INT NOT NULL,
     FOREIGN KEY (question_id) REFERENCES question (id) ON DELETE CASCADE,
     FOREIGN KEY (answer_id) REFERENCES answer (id) ON DELETE CASCADE,
     PRIMARY KEY (question_id, answer_id)
-);
+);*/
 
 
 
