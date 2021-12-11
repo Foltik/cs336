@@ -28,6 +28,7 @@
                 <ul>
                     <c:choose>
                         <c:when test="${user.role() == 'CUSTOMER'}">
+                            <li><a href="/flights">View upcoming flights</a></li>
                             <li><a href="/search">Search for flights</a></li>
                             <li><a href="/bookings">My bookings</a></li>
                             <li><a href="/qna">Ask a question</a></li>
